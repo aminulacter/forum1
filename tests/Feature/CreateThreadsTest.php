@@ -55,11 +55,10 @@ class CreateThreadsTest extends TestCase
     /** @test */
     public function a_thread_requires_a_valid_channel()
     {
-       
         factory('App\Channel', 2)->create();
         $this->publishThread(['channel_id' => null])
          ->assertSessionHasErrors('channel_id');
-         $this->publishThread(['channel_id' => 999])
+        $this->publishThread(['channel_id' => 999])
          ->assertSessionHasErrors('channel_id');
     }
 
