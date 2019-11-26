@@ -19,8 +19,18 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        body {padding-bottorm: 100px;}
+        .level {
+            display: flex;
+            align-items: center;
+        }
+        .flex {
+            flex: 1;
+        }
+    </style>
 </head>
-<body style="padding-bottorm: 100px;">
+<body >
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -44,7 +54,8 @@
                                 <a class="dropdown-item" href="/threads">All Threads</a>     
                                 @if (auth()->check())
                                     <a class="dropdown-item" href="/threads?by={{ auth()->user()->name }}">My Threads</a>
-                                @endif                       
+                                @endif   
+                                <a class="dropdown-item" href="/threads?popular=1">Popular Threads</a>                    
                                 
                             </div>
                         </li>
