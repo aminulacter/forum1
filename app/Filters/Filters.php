@@ -18,19 +18,21 @@ abstract class Filters
     {
         //we apply our filters
         $this->builder = $builder;
-        foreach ($this->filtesrs as $filter) {
-            if (! $this->hasFilter($filter)) {
-                return;
+        foreach ($this->getFilters() as $filter => $value) {
+            if(method_exists($this, $filter))
+            {
+                $this->$filter($value);
             }
-
-            $this->$filter($this->request->$filter);
+            
         }
 
       
         return $this->builder;
     }
-    protected function hasFilter($filter):bool
+    public function getFilters()
     {
-        return method_exists($this, $filter) && $this->request->has($filter);
+        $filters = array_intersect(array_keys($this->request->all()), $this->filters);
+    return $this->request->only($filters);
     }
+   
 }
