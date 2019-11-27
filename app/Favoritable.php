@@ -1,25 +1,9 @@
 <?php
-
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Reply extends Model
+trait Favoritable
 {
-    use Favoritable;
-    
-    protected $guarded = [];
-    protected $with =['owner','favorites'];
-    public function thread()
-    {
-        return $this->belongsTo('App\Thread');
-    }
-
-    public function owner()
-    {
-        return $this->belongsTo('App\User', 'user_id');
-    }
-
     public function favorites()
     {
         return $this->morphMany('App\Favorite', 'favorited');
