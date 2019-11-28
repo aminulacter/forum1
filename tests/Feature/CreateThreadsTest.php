@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Activity;
 
 class CreateThreadsTest extends TestCase
 {
@@ -84,6 +85,7 @@ class CreateThreadsTest extends TestCase
         $response->assertStatus(204);
         $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
         $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertEquals(0, Activity::count());
     }
 
    

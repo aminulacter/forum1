@@ -37,6 +37,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Thread')->latest();
     }
+    public function activity()
+    {
+        return $this->hasMany('App\Activity');
+    }
     /**
      * The attributes that should be cast to native types.
      *

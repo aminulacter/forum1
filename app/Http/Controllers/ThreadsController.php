@@ -78,7 +78,8 @@ class ThreadsController extends Controller
            'channel_id' =>request('channel_id'),
            'body' => request('body')
        ]);
-        return redirect($thread->path());
+        return redirect($thread->path())
+        ->with('flash', 'Your Thread has been published!');
     }
 
     /**
@@ -129,15 +130,7 @@ class ThreadsController extends Controller
         $this->authorize('update', $thread);
         //     $thread->replies()->delete();
 
-        if ($thread->user_id != auth()->id()) {
-            // if (request()->wantsJson()) {
-            //     return response(['status' => 'Permission Denied'], 403);
-            // }
-
-            // return redirect('/login');
-            abort(403, "You do not have permission to do this");
-        }
-
+       
         $thread->delete();
         if (request()->wantsJson()) {
             return response([], 204);

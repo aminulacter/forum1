@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
-    use Favoritable;
-    
+    use Favoritable, RecordsActivity;
+   
     protected $guarded = [];
     protected $with =['owner','favorites'];
     public function thread()
@@ -35,7 +35,7 @@ class Reply extends Model
 
     public function isFavorited()
     {
-        return !! $this->favorites()->where('user_id',auth()->id())->count();
+        return !! $this->favorites()->where('user_id', auth()->id())->count();
     }
 
     public function getFavoritesCountAttribute()

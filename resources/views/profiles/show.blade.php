@@ -7,9 +7,9 @@
 
             <div class="page-header">
         <h1>{{ $profileUser->name }}
-        <small> Since {{ $profileUser->created_at->diffForHumans() }}</small></h1>
+       
     </div>
-    @foreach ($threads as $thread)
+    {{-- @foreach ($threads as $thread)
         <div class="card mt-3">
             <div class="card-header">
                 <div class="level">
@@ -27,7 +27,15 @@
             </div>
         </div> 
         @endforeach
-        {{ $threads->links()}}
+        {{ $threads->links()}} --}}
+         @foreach ($activities as $date=>$activity)
+         <h3 class="page-header">{{$date}}</h3>
+            @foreach($activity as $record)
+                  @include("profiles.activities.{$record->type}", ['activity' => $record])
+            @endforeach
+        @endforeach
+        
+
 
         </div>
     </div>
