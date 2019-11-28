@@ -22,7 +22,7 @@ class ThreadsController extends Controller
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
-       $threads = Thread::latest()->filter($filters);
+        $threads = Thread::latest()->filter($filters);
         // dd($threads->toSql());
         if ($channel->exists) {
             $threads->where('channel_id', $channel->id);
@@ -67,10 +67,6 @@ class ThreadsController extends Controller
      */
     public function store(Request $request)
     {
-        
-        // $this->validate($request,[
-        //     'title' => 'reqired'
-        // ]);
         request()->validate([
             'title' => 'required',
             'body' => 'required',
@@ -91,7 +87,7 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($slug, Thread $thread)
+    public function show($channel, Thread $thread)
     {
         return view('threads.show', [
             'thread' =>$thread,
@@ -128,8 +124,24 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Thread $thread)
+    public function destroy($channel, Thread $thread)
     {
-        //
+        $this->authorize('update', $thread);
+        //     $thread->replies()->delete();
+
+        if ($thread->user_id != auth()->id()) {
+            // if (request()->wantsJson()) {
+            //     return response(['status' => 'Permission Denied'], 403);
+            // }
+
+            // return redirect('/login');
+            abort(403, "You do not have permission to do this");
+        }
+
+        $thread->delete();
+        if (request()->wantsJson()) {
+            return response([], 204);
+        }
+        return redirect('/threads');
     }
 }

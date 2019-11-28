@@ -32,7 +32,11 @@ class User extends Authenticatable
     {
         return 'name';
     }
-
+    
+    public function threads()
+    {
+        return $this->hasMany('App\Thread')->latest();
+    }
     /**
      * The attributes that should be cast to native types.
      *
