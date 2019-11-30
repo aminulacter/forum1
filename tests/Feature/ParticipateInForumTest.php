@@ -36,9 +36,9 @@ class ParticipateInForumTest extends TestCase
         $reply = make('App\Reply');
         $this->post($thread->path().'/replies', $reply->toArray());
 
-        // Then their reply should be visible on the page
-        $this->get($thread->path())
-        ->assertSee($reply->body);
+        // Then their reply saved in database
+        $this->assertDatabaseHas('replies', ['body' => $reply->body]);
+        $this->assertEquals(1, $thread->fresh()->replies_count);
     }
 
     /** @test */
@@ -53,13 +53,11 @@ class ParticipateInForumTest extends TestCase
         $reply = make('App\Reply', ['body' => null]);
         $this->post($thread->path().'/replies', $reply->toArray())
         ->assertSessionHasErrors('body');
-
     }
 
     /** @test */
     public function unauthenticated_users_can_not_delete_replies()
     {
-        
         $reply = create('App\Reply');
         $this->delete("replies/{$reply->id}")
         ->assertRedirect('login');
@@ -76,26 +74,27 @@ class ParticipateInForumTest extends TestCase
         $this->delete("replies/{$reply->id}")
         ->assertStatus(302);
         $this->assertDatabaseMissing('replies', ['id' =>$reply->id]);
+        $this->assertEquals(0, $reply->thread->fresh()->replies_count);
     }
-     /** @test */
-     public function authorized_users_can_edit_replies()
-     {
-         $this->signIn();
-         $updatedReply = "you have been changed";
-         $reply = create('App\Reply', ['user_id' =>auth()->id()]);
-         $this->patch("replies/{$reply->id}", ['body' => $updatedReply ]);
-         //->assertStatus(302);
-         $this->assertDatabaseHas('replies', ['id' =>$reply->id, 'body' => $updatedReply ]);
-     }
-      /** @test */
-      public function unauthorized_users_can_not_edit_replies()
-      {
-         // $this->signIn();
-          $reply = create('App\Reply');
-          $this->patch("replies/{$reply->id}")
+    /** @test */
+    public function authorized_users_can_edit_replies()
+    {
+        $this->signIn();
+        $updatedReply = "you have been changed";
+        $reply = create('App\Reply', ['user_id' =>auth()->id()]);
+        $this->patch("replies/{$reply->id}", ['body' => $updatedReply ]);
+        //->assertStatus(302);
+        $this->assertDatabaseHas('replies', ['id' =>$reply->id, 'body' => $updatedReply ]);
+    }
+    /** @test */
+    public function unauthorized_users_can_not_edit_replies()
+    {
+        // $this->signIn();
+        $reply = create('App\Reply');
+        $this->patch("replies/{$reply->id}")
           ->assertRedirect('login');
-          $this->signIn()
+        $this->signIn()
           ->patch("replies/{$reply->id}")
           ->assertStatus(403);
-      }
+    }
 }

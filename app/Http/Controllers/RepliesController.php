@@ -10,7 +10,7 @@ class RepliesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' =>'index']);
     }
    
     /**
@@ -18,9 +18,9 @@ class RepliesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($channelId, Thread $thread)
     {
-        //
+        return  $thread->replies()->paginate(10);
     }
 
     /**
@@ -30,7 +30,6 @@ class RepliesController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -46,11 +45,13 @@ class RepliesController extends Controller
             'body' => 'required',
            ]);
         
-        $thread->addReply([
+        $reply =  $thread->addReply([
         'body' =>request('body'),
         'user_id' => auth()->id()
       ]);
-
+        if (request()->expectsJson()) {
+            return $reply->load('owner');
+        }
         return back();
     }
 
@@ -83,9 +84,8 @@ class RepliesController extends Controller
      * @param  \App\Reply  $reply
      * @return \Illuminate\Http\Response
      */
-    public function update( Reply $reply)
+    public function update(Reply $reply)
     {
-        
         $this->authorize('update', $reply);
         $reply->update(['body' => request('body')]);
     }
@@ -98,10 +98,9 @@ class RepliesController extends Controller
      */
     public function destroy(Reply $reply)
     {
-       
         $this->authorize('update', $reply);
         $reply->delete();
-        if(request()->expectsJson()){
+        if (request()->expectsJson()) {
             return response(['status' => 'reply Deleted']);
         }
         return back();

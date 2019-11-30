@@ -1,0 +1,63 @@
+<template>
+    <div>
+          
+            <div class="mt-3" v-if="signedIn">
+                   
+                        <div class="form-group">
+                            
+                            <textarea id="body" 
+                            class="form-control" 
+                            name="body" rows="5"  
+                            placeholder="have something to say?"
+                            required
+                             v-model="body"></textarea>
+                        </div>    
+                        
+                        <button type="submit" 
+                        class="btn btn-primary"
+                        
+                        @click="addReply">Post</button>  
+                            
+                
+            </div>
+           <div v-else>
+                 <p>Please <a href="/login"> sign in </a> to participate in this discussion</p>
+           </div>
+          
+           
+    </div>
+</template>
+
+<script>
+    export default {
+        
+        data() {
+            return {
+                body: '',
+               
+            }
+        },
+        computed: {
+            signedIn()
+            {
+                return window.App.signedIn
+            }
+        },
+        methods: {
+            addReply()
+            {
+                axios.post(location.pathname + '/replies', { body: this.body})
+                .then(({data}) =>{
+                    this.body = ''
+                    flash('Your reply has been posted')
+                    this.$emit('created', data)
+                })
+            }
+        },
+        
+    }
+</script>
+
+<style lang="scss" scoped>
+
+</style>

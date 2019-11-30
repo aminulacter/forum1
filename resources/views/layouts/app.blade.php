@@ -20,10 +20,11 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <script>
-        window.App={ !! json_encode([
-            'signedIn' =>Auth::check(),
-            'user' => Auth::user()
-        ])}
+        window.App = {!! json_encode([
+            
+            'user' => Auth::user(),
+            'signedIn' => Auth::check()
+        ]) !!};
     </script>
     <style>
         body {padding-bottorm: 100px;}

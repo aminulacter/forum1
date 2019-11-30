@@ -5,7 +5,7 @@
             <div class="level">
                 <h5 class="flex">
                         <a :href="'/profiles/' + data.owner.name" v-text="data.owner.name"></a> 
-                         said {{ data.created_at }} ...
+                         said <span v-text="ago"></span> ...
                 </h5>
           
                <div v-if="signedIn">
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import Favorite from './Favorite.vue';
     export default {
         props: ['data'],
@@ -70,6 +71,10 @@ import Favorite from './Favorite.vue';
             {
                 return this.authorize( user => this.data.user_id == user.id)
                 //return this.data.user_id == window.App.user.id
+            },
+            ago()
+            {
+               return moment( this.data.created_at).fromNow()
             }
         },
         methods:{
@@ -86,8 +91,8 @@ import Favorite from './Favorite.vue';
             },
             destroy()
             {
-                axios.delete('/replies/'+ this.data.id);
-                this.$emit('deleted', this.data.id);
+                 axios.delete('/replies/'+ this.data.id);
+                this.$emit('deleted');
                 
                 
             }
