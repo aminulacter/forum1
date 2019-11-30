@@ -19,6 +19,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <script>
+        window.App={ !! json_encode([
+            'signedIn' =>Auth::check(),
+            'user' => Auth::user()
+        ])}
+    </script>
     <style>
         body {padding-bottorm: 100px;}
         .level {
@@ -28,6 +34,7 @@
         .flex {
             flex: 1;
         }
+        [v-cloak] { display: none}
     </style>
 </head>
 <body >

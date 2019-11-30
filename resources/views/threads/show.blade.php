@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<thread-view  initialreplycount="{{ $thread->replies_count }}" inline-template>
 <div class="container">
     <div class="row">
             <div class="col-md-8">
@@ -27,13 +28,11 @@
                         {{ $thread->body }}
                     </div>
                 </div>
-            
+                       
                 <div>
-                    @foreach ($replies as $reply)
-                        @include('threads.reply')
-                                   
-                    @endforeach
-                    {{ $replies->links()}}
+                    <replies :data= "{{ $thread->replies }}" @removed="repliesCount--"></replies>
+                   
+                    {{ $replies->links()}} --}}
                 </div>      
                 
     
@@ -63,7 +62,7 @@
                    
                     <p class="card-text">
                         This thread was published {{ $thread->created_at->diffForHumans() }} by 
-                        <a href="#"> {{ $thread->creator->name }}</a> and currently has {{ $thread->replies_count }}
+                        <a href="#"> {{ $thread->creator->name }}</a> and currently has <span v-text="repliesCount"></span>
                        {{ Str::plural('comment', $thread->replies_count)}}
                     </p>
                 </div>
@@ -74,4 +73,5 @@
     
    
 </div>
+</thread-view>
 @endsection

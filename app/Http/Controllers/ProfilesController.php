@@ -10,8 +10,8 @@ class ProfilesController extends Controller
 {
     public function show(User $user)
     {
-        
-        //dd($activities);
+       // return Activity::feed($user);
+       //dd($activities);
         return view(
             'profiles.show',
             [
