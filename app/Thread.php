@@ -22,7 +22,7 @@ class Thread extends Model
         });
     }
 
-   
+   protected $appends = ['isSubscribedTo'];
 
     public function path()
     {
@@ -46,6 +46,16 @@ class Thread extends Model
     public function addReply($reply)
     {
         return $this->replies()->create($reply);
+        $this->subscriptions
+        ->filter(function ($sub) use ($reply){
+            return $sub->user_id != $reply->user_id;
+        })->each->notify($reply);
+        // ->each(function ($sub) use($reply){
+        //     $sub->user->notify(new ThreadWasUpdated($this, $reply));
+        // });
+       
+
+        return $reply;
     }
 
     public function scopeFilter($query, $filters)
@@ -58,6 +68,7 @@ class Thread extends Model
         $this->subscriptions()->create([
             'user_id' => $userId?: auth()->id()
         ]);
+        return $this;
     }
 
     public function unsubscribe($userId = null)
@@ -68,5 +79,12 @@ class Thread extends Model
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()
+                ->where('user_id', auth()->id())
+                ->exists();
     }
 }
