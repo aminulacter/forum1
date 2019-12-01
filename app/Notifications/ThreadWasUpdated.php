@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Illuminate\Notifications\Notification;
+use App\Thread;
+use App\Reply;
 
 class ThreadWasUpdated extends Notification
 {
@@ -18,7 +20,7 @@ class ThreadWasUpdated extends Notification
      *
      * @return void
      */
-    public function __construct($thread, $reply)
+    public function __construct(Thread $thread, Reply $reply)
     {
         $this->thread = $thread;
         $this->reply = $reply;
@@ -58,7 +60,8 @@ class ThreadWasUpdated extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Temporary placeholder'
+            'message' => $this->reply->owner->name . ' replied to ' . $this->thread->title,
+            'link' =>$this->reply->path()
         ];
     }
 }

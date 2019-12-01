@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\ThreadWasUpdated;
 
 class ThreadSubscription extends Model
 {
@@ -21,5 +22,4 @@ class ThreadSubscription extends Model
     {
         $this->user->notify(new ThreadWasUpdated($this->thread, $reply));
     }
-    
 }

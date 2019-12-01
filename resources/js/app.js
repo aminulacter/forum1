@@ -29,6 +29,7 @@ window.Vue.prototype.authorize = function (handler )
 
 Vue.component('flash', require('./components/Flash.vue').default);
 //Vue.component('replies', require('./components/Replies.vue').default);
+Vue.component('user-notifications', require('./components/UserNotifications.vue').default);
 
 Vue.component('thread-view', require('./pages/Thread.vue').default);
 Vue.component("Paginator", require("./components/Paginator.vue").default);
