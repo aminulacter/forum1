@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
-use App\Inspections\Spam;
 use Illuminate\Http\Request;
 use App\Thread;
 use Illuminate\Support\Str;
+use App\Rules\SpamFree;
+use Illuminate\Support\Facades\Gate;
 
 class RepliesController extends Controller
 {
@@ -40,22 +41,24 @@ class RepliesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channelId, Thread $thread, Spam $spam)
+    public function store($channelId, Thread $thread)
     {
-        request()->validate([
-            
-            'body' => 'required',
-           ]);
-           (new Spam)->detect(request('body'));
-      
-            $reply =  $thread->addReply([
-            'body' =>request('body'),
-            'user_id' => auth()->id()
-        ]);
-        if (request()->expectsJson()) {
-            return $reply->load('owner');
+        // $this->authorize('create', new Reply);
+        if (Gate::denies('create', new Reply)) {
+            return response(['message' =>"Sorry your reply could not ve save at this time"], 422);
         }
-        return back();
+        request()->validate([
+            'body' => ['required', new SpamFree]
+        ]);
+
+        $reply = $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id()
+            ]);
+       
+
+      
+        return $reply->load('owner');
     }
 
     /**
@@ -90,6 +93,13 @@ class RepliesController extends Controller
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
+
+        request()->validate([
+            'body' => ['required', new SpamFree]
+        ]);
+
+    
+
         $reply->update(['body' => request('body')]);
     }
 

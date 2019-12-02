@@ -6,18 +6,15 @@ use Exception;
 
 class InvalidKeywords
 {
-    protected  $invalidKeywords =[
-        'yahoo customer support'
+    protected $invalidKeywords =[
+        'yahoo customer support',
+        'boobs'
     ];
     
     public function detect($body)
     {
-       
-
-        foreach($this->invalidKeywords as $keywords)
-        {
-            if(stripos($body, $keywords)!==false)
-            {
+        foreach ($this->invalidKeywords as $keywords) {
+            if (stripos($body, $keywords)!==false) {
                 throw new Exception('Your reply contains spam.');
             }
         }

@@ -80,13 +80,16 @@ import Favorite from './Favorite.vue';
         methods:{
             update()
             {
-                axios.patch('/replies/'+ this.data.id,{
+               this.editing = false
+               
+               axios.patch('/replies/'+ this.data.id,{
                     body: this.body
-                }).then(response => {
-                    this.editing = false
-                    flash("updated");
-                    })
-                .catch(error => this.edit=false)
+                }).then(response =>  flash("updated"))
+                .catch(error => {
+                    flash(error.response.data.message, 'danger')
+                   this.body = this.data.body
+                  
+                })
                 
             },
             destroy()

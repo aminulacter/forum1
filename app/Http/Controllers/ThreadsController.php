@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Filters\ThreadFilters;
 use Carbon\Carbon;
+use App\Rules\SpamFree;
 
 class ThreadsController extends Controller
 {
@@ -69,16 +70,24 @@ class ThreadsController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'title' => 'required',
-            'body' => 'required',
-            'channel_id' => 'required|exists:channels,id'
-        ]);
+                'title' => ['required', new SpamFree],
+                'body' => ['required', new SpamFree],
+                'channel_id' => 'required|exists:channels,id'
+            ]);
+        
+        
         $thread = Thread::create([
-           'user_id' => auth()->id(),
-           'title' => request('title'),
-           'channel_id' =>request('channel_id'),
-           'body' => request('body')
-       ]);
+            'user_id' => auth()->id(),
+            'title' => request('title'),
+            'channel_id' =>request('channel_id'),
+            'body' => request('body')
+        ]);
+        // } catch (\Exception $e) {
+        //     // return response("YOur reply cant be saved at this time.", 422);
+        //     return back()->withInput();
+        // }
+        
+     
         return redirect($thread->path())
         ->with('flash', 'Your Thread has been published!');
     }

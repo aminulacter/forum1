@@ -97,19 +97,37 @@ class ParticipateInForumTest extends TestCase
           ->patch("replies/{$reply->id}")
           ->assertStatus(403);
     }
+    // /** @test */
+    // public function replies_that_contain_spam_may_not_be_created()
+    // {
+    //     $this->signIn();
+        
+    //     //add a thread
+    //     $thread = create('App\Thread');
+
+    //     //When a user adds a reply to thread
+    //     $reply = make('App\Reply', [
+    //         'body' => 'yahoo customer support'
+    //     ]);
+       
+    //     $this->post($thread->path().'/replies', $reply->toArray())
+    //     ->assertStatus(422);
+    // }
     /** @test */
-    public function replies_that_contain_spam_may_not_be_created()
+    public function users_may_only_reply_a_maximum_of_once_per_minute()
     {
         $this->signIn();
-        
-        //add a thread
+
         $thread = create('App\Thread');
 
-        //When a user adds a reply to thread
-        $reply = make('App\Reply',[
-            'body' => 'yahoo customer support'
+        $reply = make('App\Reply', [
+            'body' => 'Standard Reply'
         ]);
-        $this->expectException(\Exception::class);
-        $this->post($thread->path().'/replies', $reply->toArray());
+     
+        $this->post($thread->path().'/replies', $reply->toArray())->assertStatus(201);
+      
+       
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
     }
 }
