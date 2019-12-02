@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
+use App\Inspections\Spam;
 use Illuminate\Http\Request;
 use App\Thread;
+use Illuminate\Support\Str;
 
 class RepliesController extends Controller
 {
@@ -38,17 +40,18 @@ class RepliesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread, Spam $spam)
     {
         request()->validate([
             
             'body' => 'required',
            ]);
-        
-        $reply =  $thread->addReply([
-        'body' =>request('body'),
-        'user_id' => auth()->id()
-      ]);
+           (new Spam)->detect(request('body'));
+      
+            $reply =  $thread->addReply([
+            'body' =>request('body'),
+            'user_id' => auth()->id()
+        ]);
         if (request()->expectsJson()) {
             return $reply->load('owner');
         }
