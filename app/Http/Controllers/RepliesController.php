@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Forms\CreatePostForm;
 use App\Reply;
 use Illuminate\Http\Request;
 use App\Thread;
@@ -41,24 +42,14 @@ class RepliesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread, CreatePostForm $form)
     {
-        // $this->authorize('create', new Reply);
-        if (Gate::denies('create', new Reply)) {
-            return response(['message' =>"Sorry your reply could not ve save at this time"], 422);
-        }
-        request()->validate([
-            'body' => ['required', new SpamFree]
-        ]);
-
-        $reply = $thread->addReply([
+        
+           
+        return $thread->addReply([
                 'body' => request('body'),
                 'user_id' => auth()->id()
-            ]);
-       
-
-      
-        return $reply->load('owner');
+            ])->load('owner');     
     }
 
     /**
