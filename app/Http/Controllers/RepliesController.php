@@ -9,6 +9,7 @@ use App\Thread;
 use Illuminate\Support\Str;
 use App\Rules\SpamFree;
 use Illuminate\Support\Facades\Gate;
+use App\User;
 
 class RepliesController extends Controller
 {
@@ -28,15 +29,6 @@ class RepliesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -44,36 +36,13 @@ class RepliesController extends Controller
      */
     public function store($channelId, Thread $thread, CreatePostForm $form)
     {
-        
-           
         return $thread->addReply([
                 'body' => request('body'),
                 'user_id' => auth()->id()
-            ])->load('owner');     
+            ])->load('owner');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
-    }
-
+  
     /**
      * Update the specified resource in storage.
      *
@@ -88,9 +57,6 @@ class RepliesController extends Controller
         request()->validate([
             'body' => ['required', new SpamFree]
         ]);
-
-    
-
         $reply->update(['body' => request('body')]);
     }
 

@@ -25,7 +25,7 @@ class ThreadsController extends Controller
     public function index(Channel $channel, ThreadFilters $filters)
     {
         $threads = Thread::latest()->filter($filters);
-        // dd($threads->toSql());
+       
         if ($channel->exists) {
             $threads->where('channel_id', $channel->id);
         }
@@ -82,12 +82,7 @@ class ThreadsController extends Controller
             'channel_id' =>request('channel_id'),
             'body' => request('body')
         ]);
-        // } catch (\Exception $e) {
-        //     // return response("YOur reply cant be saved at this time.", 422);
-        //     return back()->withInput();
-        // }
-        
-     
+       
         return redirect($thread->path())
         ->with('flash', 'Your Thread has been published!');
     }

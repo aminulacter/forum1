@@ -10,6 +10,7 @@ class Reply extends Model
     use Favoritable, RecordsActivity;
    
     protected $guarded = [];
+    protected $appends = ['favorites_count', 'isFavorited'];
     protected $with =['owner','favorites'];
     protected static function boot()
     {
@@ -31,19 +32,28 @@ class Reply extends Model
     {
         return $this->created_at->gt(Carbon::now()->subMinute());
     }
-    public function path()
-    {
-        return $this->thread->path()."#reply-{$this->id}";
-    }
+  
 
     public function owner()
     {
         return $this->belongsTo('App\User', 'user_id');
     }
-    protected $appends = ['favorites_count', 'isFavorited' ];
-
    
 
+    public function mentionedUsers()
+    {
+        preg_match_all('/@([\w\-]+)/', $this->body, $matches);
+        return $matches[1];
+    }
+
+    public function path()
+    {
+        return $this->thread->path() . "#reply-{$this->id}";
+    }
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profiles/$1">$0</a>', $body);
+    }
     // public function favorites()
     // {
     //     return $this->morphMany('App\Favorite', 'favorited');

@@ -12,23 +12,22 @@
                      <favorite :reply="data"></favorite>
                      
                </div>
-           
-            
             </div>
              
      </div>
 
      <div class="card-body">
         <div v-if="editing">
-          <div class="form-group">
-               <textarea id="my-textarea" class="form-control" name="body" rows="3" v-model="body"></textarea>
-          </div>
-           <button class="btn btn-sm btn-primary" @click="update">Update</button>
-           <button class="btn btn-sm btn-link" @click="editing = false">cancel</button>
+            <form @submit="update">
+                <div class="form-group">
+                    <textarea id="my-textarea" class="form-control" name="body" rows="3" v-model="body" required></textarea>
+                </div>
+                <button class="btn btn-sm btn-primary" type="submit">Update</button>
+                <button class="btn btn-sm btn-link"  type="button" @click="cancel">cancel</button>
            
-         
+            </form>
         </div>
-        <div v-else v-text = "body">
+        <div v-else v-html = "body">
            
         </div>
             
@@ -81,23 +80,25 @@ import Favorite from './Favorite.vue';
             update()
             {
                this.editing = false
-               
+          
                axios.patch('/replies/'+ this.data.id,{
                     body: this.body
                 }).then(response =>  flash("updated"))
                 .catch(error => {
                     flash(error.response.data.message, 'danger')
                    this.body = this.data.body
-                  
                 })
-                
+            },
+            cancel()
+            {
+                  this.editing = false
+                 this.body = this.data.body
             },
             destroy()
             {
                  axios.delete('/replies/'+ this.data.id);
                 this.$emit('deleted');
-                
-                
+ 
             }
         }    
        }

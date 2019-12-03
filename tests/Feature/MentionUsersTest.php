@@ -8,19 +8,20 @@ use Tests\TestCase;
 
 class MentionUsersTest extends TestCase
 {
-  use RefreshDatabase;
+    use RefreshDatabase;
     /** @test */
     public function mentioned_users_in_a_reply_are_notified()
     {
-        $john = create('App\User',['name' => 'JaneDoe']);
+        $john = create('App\User', ['name' => 'JaneDoe']);
         $this->signIn($john);
 
         $jane =create('App\User', ['name' => 'jane']);
 
-        $thread = crate('App\Tread');
+        $thread = create('App\Thread');
         $reply = make('App\Reply', [
-            'body' => '@janeDoe look at this'
+            'body' => '@jane look at this'
             ]);
         $this->post($thread->path().'/replies', $reply->toArray());
+        $this->assertCount(1, $jane->fresh()->notifications);
     }
 }

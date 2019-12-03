@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use Carbon\Carbon;
+use App\Reply;
 
 class ReplyTest extends TestCase
 {
@@ -26,5 +27,26 @@ class ReplyTest extends TestCase
         $reply->created_at = Carbon::now()->subWeek();
         // dd($reply->created_at);
         $this->assertFalse($reply->wasJustPublished());
+    }
+
+    /** @test */
+    public function it_can_detect_all_mentioned_users_in_the_body()
+    {
+        $reply = create('App\Reply', [
+            'body' => '@JaneDoe wants to talk to @JohnDoe'
+        ]);
+        $this->assertEquals(['JaneDoe', 'JohnDoe'], $reply->mentionedUsers());
+    }
+
+    /** @test */
+    public function it_wraps_mentioned_usernames_in_the_body_within_anchor_tags()
+    {
+        $reply = new Reply([
+            'body' => 'Hello @JaneDoe'
+        ]);
+        $this->assertEquals(
+            'Hello <a href="/profiles/JaneDoe">@JaneDoe</a>',
+            $reply->body
+        );
     }
 }

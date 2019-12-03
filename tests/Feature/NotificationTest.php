@@ -54,14 +54,6 @@ class NotificationTest extends TestCase
     public function a_user_can_mark_a_notification_as_read()
     {
         create(DatabaseNotification::class);
-        // $thread = create('App\Thread')->subscribe();
-
-        // $thread->addReply([
-        //     'user_id' => create('App\User')->id,
-        //     'body' => 'Some reply here'
-        // ]);
-      
-
         tap(auth()->user(), function ($user) {
             $this->assertCount(1, $user->fresh()->notifications);
             $this->delete("/profiles/{$user->name}/notifications/". $user->unreadNotifications->first()->id);
