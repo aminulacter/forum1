@@ -24,4 +24,15 @@ class MentionUsersTest extends TestCase
         $this->post($thread->path().'/replies', $reply->toArray());
         $this->assertCount(1, $jane->fresh()->notifications);
     }
+    /** @test */
+    public function it_can_fetch_all_mentioned_users_starting_with_the_given_charactiers()
+    {
+        create('App\User', ['name' => 'JaneDoe']);
+        create('App\User', ['name' => 'JohnDoe']);
+        create('App\User', ['name' => 'JohnDoe2']);
+
+        $result = $this->json('GET', 'api/users', ['name' => 'jonh']);
+        $this->assertCount(2, $result->json());
+        
+    }
 }

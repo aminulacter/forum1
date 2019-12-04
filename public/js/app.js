@@ -8146,7 +8146,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.alert-flash{\r\n    position: fixed;\r\n    right: 25px;\r\n    bottom: 25px;\n}\r\n", ""]);
+exports.push([module.i, "\n.alert-flash{\n    position: fixed;\n    right: 25px;\n    bottom: 25px;\n}\n", ""]);
 
 // exports
 
@@ -71086,8 +71086,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\Administrator\laravelprojects\forum1\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\Administrator\laravelprojects\forum1\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/aminul/laravelpro/forum/forum1/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/aminul/laravelpro/forum/forum1/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
