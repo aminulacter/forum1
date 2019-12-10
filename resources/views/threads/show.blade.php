@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('header')
 <link rel="stylesheet" href="{{ asset('css/vendor/jquery.atwho.css') }}">
+<script>
+    window.thread = @json($thread)
+</script>
 @endsection
 @section('content')
 <thread-view  initialreplycount="{{ $thread->replies_count }}" inline-template>
@@ -10,7 +13,9 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="level">
+                               
                             <span class="flex">
+                                    <img src="{{ asset($thread->creator->avatar_path) }}" alt="{{ $thread->creator->name }}" height="25" width="25">
                                 <a href="{{route('profile', $thread->creator)}}">{{ $thread->creator->name }}</a> posted:    {{ $thread->title }}
                             </span>
                               @can('update', $thread)

@@ -36,10 +36,15 @@ class RepliesController extends Controller
      */
     public function store($channelId, Thread $thread, CreatePostForm $form)
     {
+       try{
         return $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id()
-            ])->load('owner');
+            'body' => request('body'),
+            'user_id' => auth()->id()
+        ])->load('owner');
+       }
+       catch(\Exception $e){
+           return response('Locked', 422);
+       } 
     }
 
   

@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Events\ThreadReceivedNewReply;
+use Illuminate\Support\Str;
+
 
 class Thread extends Model
 {
@@ -15,11 +17,11 @@ class Thread extends Model
     {
         parent::boot();
 
-        // static::addGlobalScope('replies_Count', function ($builder) {
-        //     $builder->withCount('replies');
-        // });
         static::deleting(function ($thread) {
             $thread->replies->each->delete();
+        });
+        static::created(function($thread){
+            $thread->update(['slug' => $thread->title]);
         });
     }
 
@@ -27,7 +29,7 @@ class Thread extends Model
 
     public function path()
     {
-        return "/threads/{$this->channel->slug}/{$this->id}";
+        return "/threads/{$this->channel->slug}/{$this->slug}";
     }
     public function replies()
     {
@@ -46,6 +48,11 @@ class Thread extends Model
 
     public function addReply($reply)
     {
+        if($this->locked)
+        {
+            throw new \Exception('Thread is locked');
+        }
+
         $reply = $this->replies()->create($reply);
         event(new ThreadReceivedNewReply($reply));
    
@@ -91,4 +98,32 @@ class Thread extends Model
 
         return $this->updated_at > cache($key);
     }
+
+   public function getRouteKeyName()
+   {
+       return 'slug';
+   }
+
+   public function setSlugAttribute($value)
+   {
+        $slug = Str::slug($value);
+     
+        if(static::whereSlug($slug)->exists())  
+        {
+            $slug = "{$slug}-" . $this->id;
+        }
+   
+
+       $this->attributes['slug'] = $slug;
+   }
+   public function markBestReply(Reply $reply)
+   {
+       $this->update(['best_reply_id' => $reply->id]);
+       
+   }
+   public function lock()
+   {
+       $this->update(['locked' => true]);
+   }
+  
 }

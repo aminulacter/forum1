@@ -9,6 +9,7 @@ use App\Thread;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\ThreadWasUpdated;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 //use Illuminate\Support\Testing\Fakes\NotificationFake;
 
@@ -26,12 +27,12 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
-    public function a_thread_can_make_a_string_path()
+    public function a_thread_has_a_path()
     {
         //  $thread = create('App\Thread');
-        // $this->withoutExceptionHandling();
        
-        $this->assertEquals("/threads/{$this->thread->channel->slug}/{$this->thread->id}", $this->thread->path());
+       
+        $this->assertEquals("/threads/{$this->thread->channel->slug}/{$this->thread->slug}", $this->thread->path());
     }
 
     /** @test */
@@ -129,5 +130,13 @@ class ThreadTest extends TestCase
 
             $this->assertFalse($thread->hasUpdatesFor($user));
         });
+    }
+
+    /** @test */
+    public function a_thread_may_be_locked()
+    {
+        $this->assertFalse($this->thread->locked);
+        $this->thread->lock();
+        $this->assertTrue($this->thread->locked);
     }
 }

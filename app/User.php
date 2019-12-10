@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','avatar_path', 'confirmation_token', 'confirmed'
     ];
 
     /**
@@ -26,8 +26,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email', 'avatar_path'
+        'password', 'remember_token', 'email',
     ];
+
+   
 
     public function getRouteKeyName()
     {
@@ -49,6 +51,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'confirmed' => 'boolean'
     ];
 
     public function VisitedThreadCacheKey($thread)
@@ -61,8 +64,24 @@ class User extends Authenticatable
         cache()->forever($this->visitedThreadCacheKey($thread), Carbon::now());
     }
 
+    public function getAvatarPathAttribute($avatar)
+    {
+        return asset($avatar ?:'avatars/default.jpg');
+    }
+
     public function lastReply()
     {
         return $this->hasOne(Reply::class)->latest();
+    }
+    public function confirm()
+    {
+        $this->confirmed = true;
+        $this->confirmation_token = null;
+        $this->save();
+    }
+
+    public function isAdmin()
+    {
+        return in_array($this->name, ['aminul', 'acter']);
     }
 }

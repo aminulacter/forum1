@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Thread;
 use Illuminate\Http\Request;
-use App\User;
 use App\Filters\ThreadFilters;
-use Carbon\Carbon;
 use App\Rules\SpamFree;
+use App\Trending;
+
 
 class ThreadsController extends Controller
 {
@@ -22,13 +22,16 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel, ThreadFilters $filters)
+    public function index(Channel $channel, ThreadFilters $filters, Trending $trending)
     {
         $threads = $this->getThreads($channel, $filters);
         if (request()->wantsJson()) {
             return $threads;
         }
-        return view('threads.index', compact('threads'));
+       
+        return view('threads.index',[
+            'threads' =>$threads, 
+            'trending' =>  $trending->get()] );
     }
 
     protected function getThreads(Channel $channel, ThreadFilters $filters)
@@ -61,6 +64,7 @@ class ThreadsController extends Controller
      */
     public function store(Request $request)
     {
+      
         request()->validate([
                 'title' => ['required', new SpamFree],
                 'body' => ['required', new SpamFree],
@@ -72,9 +76,13 @@ class ThreadsController extends Controller
             'user_id' => auth()->id(),
             'title' => request('title'),
             'channel_id' =>request('channel_id'),
-            'body' => request('body')
+            'body' => request('body'),
+           
         ]);
-       
+        if(request()->wantsJson())
+        {
+            return response($thread, 201);
+        }
         return redirect($thread->path())
         ->with('flash', 'Your Thread has been published!');
     }
@@ -85,11 +93,16 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($channel, Thread $thread)
+    public function show($channel, Thread $thread, Trending $trending)
     {
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
+
+       $trending->push($thread);
+       //$thread->visits()->record();
+       $thread->increment('visits');
+
         return view('threads.show', compact('thread'));
     }
 
@@ -111,9 +124,10 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thread $thread)
+    public function update(Request $request,$channel, Thread $thread)
     {
-        //
+       
+       
     }
 
     /**
@@ -134,4 +148,5 @@ class ThreadsController extends Controller
         }
         return redirect('/threads');
     }
+    
 }

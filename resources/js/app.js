@@ -5,17 +5,23 @@
  */
 
 require('./bootstrap');
+import authorizations from './authorizations';
 
 window.Vue = require('vue');
 
-window.Vue.prototype.authorize = function (handler )
+window.Vue.prototype.authorize = function (...params )
 {
-    let user = window.App.user;
+    if(! window.App.user) return false
+
+    if(typeof params[0] ==='string')
+    {
+        return authorizations[params[0]](params[1]);
+    }
     
-    return user ? handler(user) : false;
+    return params[0](window.App.user);
   
 }
-
+window.Vue.prototype.signedIn = window.App.signedIn
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -33,7 +39,7 @@ Vue.component('user-notifications', require('./components/UserNotifications.vue'
 
 Vue.component('thread-view', require('./pages/Thread.vue').default);
 Vue.component("Paginator", require("./components/Paginator.vue").default);
-
+Vue.component("avatar-form", require("./components/AvatarForm.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
