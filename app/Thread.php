@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Support\Str;
-
+use PhpParser\Node\Expr\FuncCall;
 
 class Thread extends Model
 {
@@ -89,7 +89,9 @@ class Thread extends Model
                 ->where('user_id', auth()->id())
                 ->exists();
     }
-
+    protected $casts = [
+        'locked' => 'boolean'
+    ];
     public function hasUpdatesFor($user)
     {
         // $key = sprintf("users.%s.visits.%s", auth()->id(), $this->id);
@@ -121,9 +123,6 @@ class Thread extends Model
        $this->update(['best_reply_id' => $reply->id]);
        
    }
-   public function lock()
-   {
-       $this->update(['locked' => true]);
-   }
+  
   
 }

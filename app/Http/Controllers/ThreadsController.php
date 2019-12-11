@@ -125,7 +125,7 @@ class ThreadsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$channel, Thread $thread)
-    {
+    { 
        
        
     }
