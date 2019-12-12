@@ -13,10 +13,10 @@ import SubscribeButton from "../components/SubscribeButton"
             }
         },
         methods:{
-            lock()
+            togglelock()
             {
-                
-                axios[this.locked ? 'delete' : 'post']('locked-threads/' + this.thread.slug);
+                console.log(this.locked)
+                axios[this.locked ? 'delete' : 'post']('/locked-threads/' + this.thread.slug);
                 this.locked = !this.locked;
 
 

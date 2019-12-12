@@ -56,9 +56,9 @@
                         <a href="#"> {{ $thread->creator->name }}</a> and currently has <span v-text="repliesCount"></span>
                        {{ Str::plural('comment', $thread->replies_count)}}
                     </p>
-                    <p>
+                    <p class="level">
                        <subscribe-button :active={{ json_encode($thread->isSubscribedTo) }} v-if="signedIn"></subscribe-button>
-                       <button class="btn" v-if="authorize('isAdmin)' && !locked" @click="togglelock" v-text="locked ? 'Unlock': 'lock'"></button>
+                       <button class="btn btn-secondary ml-3" v-if="authorize('isAdmin')" @click="togglelock" v-text="locked ? 'Unlock': 'lock'"></button>
                     </p>
                 </div>
             </div>

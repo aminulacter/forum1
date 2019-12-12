@@ -6,6 +6,7 @@ use App\Channel;
 use App\Thread;
 use Illuminate\Http\Request;
 use App\Filters\ThreadFilters;
+use App\Rules\Recaptcha;
 use App\Rules\SpamFree;
 use App\Trending;
 
@@ -68,10 +69,12 @@ class ThreadsController extends Controller
         request()->validate([
                 'title' => ['required', new SpamFree],
                 'body' => ['required', new SpamFree],
-                'channel_id' => 'required|exists:channels,id'
+                'channel_id' => 'required|exists:channels,id',
+                'g-recaptcha-response' => ['required', new Recaptcha()]
             ]);
         
         
+
         $thread = Thread::create([
             'user_id' => auth()->id(),
             'title' => request('title'),
@@ -83,9 +86,39 @@ class ThreadsController extends Controller
         {
             return response($thread, 201);
         }
+       
         return redirect($thread->path())
         ->with('flash', 'Your Thread has been published!');
     }
+
+
+    // public function store(Request $request, Recaptcha $recaptcha)
+    // {
+      
+    //     request()->validate([
+    //             'title' => ['required', new SpamFree],
+    //             'body' => ['required', new SpamFree],
+    //             'channel_id' => 'required|exists:channels,id',
+    //             'g-recaptcha-response' => ['required', $recaptcha]
+    //         ]);
+        
+        
+
+    //     $thread = Thread::create([
+    //         'user_id' => auth()->id(),
+    //         'title' => request('title'),
+    //         'channel_id' =>request('channel_id'),
+    //         'body' => request('body'),
+           
+    //     ]);
+    //     if(request()->wantsJson())
+    //     {
+    //         return response($thread, 201);
+    //     }
+       
+    //     return redirect($thread->path())
+    //     ->with('flash', 'Your Thread has been published!');
+    // }
 
     /**
      * Display the specified resource.
