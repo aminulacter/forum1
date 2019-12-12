@@ -3726,14 +3726,35 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       repliesCount: this.thread.replies_count,
-      locked: this.thread.locked
+      locked: this.thread.locked,
+      editing: false,
+      form: {}
     };
+  },
+  created: function created() {
+    this.resetForm();
   },
   methods: {
     togglelock: function togglelock() {
-      console.log(this.locked);
-      axios[this.locked ? 'delete' : 'post']('/locked-threads/' + this.thread.slug);
+      var uri = "/locked-threads/".concat(this.thread.slug);
+      axios[this.locked ? 'delete' : 'post'](uri);
       this.locked = !this.locked;
+    },
+    update: function update() {
+      var _this = this;
+
+      var uri = "/threads/'".concat(this.thread.channel.slug, "/").concat(this.thread.slug);
+      axios.patch(uri, this.form).then(function (response) {
+        flash("your Thread has been updated");
+        _this.editing = false;
+      });
+    },
+    resetForm: function resetForm() {
+      this.form = {
+        title: this.thread.title,
+        body: this.thread.body
+      };
+      this.editing = false;
     }
   }
 });
@@ -8283,7 +8304,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.alert-flash{\n    position: fixed;\n    right: 25px;\n    bottom: 25px;\n}\n", ""]);
+exports.push([module.i, "\n.alert-flash{\r\n    position: fixed;\r\n    right: 25px;\r\n    bottom: 25px;\n}\r\n", ""]);
 
 // exports
 
@@ -71487,8 +71508,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/aminul/laravelpro/forum/forum1/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/aminul/laravelpro/forum/forum1/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Administrator\laravelprojects\forum1\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Administrator\laravelprojects\forum1\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

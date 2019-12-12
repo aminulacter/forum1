@@ -10,7 +10,6 @@ use App\Rules\Recaptcha;
 use App\Rules\SpamFree;
 use App\Trending;
 
-
 class ThreadsController extends Controller
 {
     public function __construct()
@@ -30,9 +29,9 @@ class ThreadsController extends Controller
             return $threads;
         }
        
-        return view('threads.index',[
-            'threads' =>$threads, 
-            'trending' =>  $trending->get()] );
+        return view('threads.index', [
+            'threads' =>$threads,
+            'trending' =>  $trending->get()]);
     }
 
     protected function getThreads(Channel $channel, ThreadFilters $filters)
@@ -65,7 +64,6 @@ class ThreadsController extends Controller
      */
     public function store(Request $request)
     {
-      
         request()->validate([
                 'title' => ['required', new SpamFree],
                 'body' => ['required', new SpamFree],
@@ -82,8 +80,7 @@ class ThreadsController extends Controller
             'body' => request('body'),
            
         ]);
-        if(request()->wantsJson())
-        {
+        if (request()->wantsJson()) {
             return response($thread, 201);
         }
        
@@ -132,9 +129,9 @@ class ThreadsController extends Controller
             auth()->user()->read($thread);
         }
 
-       $trending->push($thread);
-       //$thread->visits()->record();
-       $thread->increment('visits');
+        $trending->push($thread);
+        //$thread->visits()->record();
+        $thread->increment('visits');
 
         return view('threads.show', compact('thread'));
     }
@@ -157,10 +154,25 @@ class ThreadsController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$channel, Thread $thread)
-    { 
-       
-       
+
+
+    public function update(Request $request, $channel, Thread $thread)
+    {
+        $this->authorize('update', $thread);
+        $thread->update(request()->validate([
+            'title' => ['required', new SpamFree],
+            'body' => ['required', new SpamFree],
+        ]));
+
+
+        // $thread->title = request()->title;
+        // $thread->body = request()->body;
+        // $thread->save();
+
+
+        // $thread->update(request('title', 'body'));
+        //dd($thread);
+        //return $thread;
     }
 
     /**
@@ -181,5 +193,4 @@ class ThreadsController extends Controller
         }
         return redirect('/threads');
     }
-    
 }

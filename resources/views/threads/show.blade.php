@@ -9,41 +9,14 @@
 <thread-view  :thread="{{ $thread }}" inline-template>
 <div class="container">
     <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="level">
-                               
-                            <span class="flex">
-                                    <img src="{{ asset($thread->creator->avatar_path) }}" alt="{{ $thread->creator->name }}" height="25" width="25">
-                                <a href="{{route('profile', $thread->creator)}}">{{ $thread->creator->name }}</a> posted:    {{ $thread->title }}
-                            </span>
-                              @can('update', $thread)
-                                <form method="post" action="{{ $thread->path() }}">
-                                    @csrf 
-                                    @method('delete') 
-                                    <button type="submit" class="btn btn-link">Delete Thread</button>      
-                                </form>
-                                    
-                                @endcan
-                       
-                        </div>
-                        
-                    </div>
-
-                    <div class="card-body">  
-                        {{ $thread->body }}
-                    </div>
-                </div>
+            <div class="col-md-8" v-cloak>
+              @include('threads._question')
                        
                 <div>
                     <replies  @added="repliesCount++"   @removed="repliesCount--"></replies>
-                   
+                 
                     {{-- {{ $replies->links()}} --}}
                 </div>      
-                
-    
-                    
         
         </div>
         <div class="col-md-4">

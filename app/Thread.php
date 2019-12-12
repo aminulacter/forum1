@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\FuncCall;
+use Laravel\Scout\Searchable;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use RecordsActivity, Searchable;
     protected $guarded = [];
     protected $with=['creator', 'channel'];
 
@@ -20,7 +21,7 @@ class Thread extends Model
         static::deleting(function ($thread) {
             $thread->replies->each->delete();
         });
-        static::created(function($thread){
+        static::created(function ($thread) {
             $thread->update(['slug' => $thread->title]);
         });
     }
@@ -48,8 +49,7 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        if($this->locked)
-        {
+        if ($this->locked) {
             throw new \Exception('Thread is locked');
         }
 
@@ -101,28 +101,24 @@ class Thread extends Model
         return $this->updated_at > cache($key);
     }
 
-   public function getRouteKeyName()
-   {
-       return 'slug';
-   }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
-   public function setSlugAttribute($value)
-   {
+    public function setSlugAttribute($value)
+    {
         $slug = Str::slug($value);
      
-        if(static::whereSlug($slug)->exists())  
-        {
+        if (static::whereSlug($slug)->exists()) {
             $slug = "{$slug}-" . $this->id;
         }
    
 
-       $this->attributes['slug'] = $slug;
-   }
-   public function markBestReply(Reply $reply)
-   {
-       $this->update(['best_reply_id' => $reply->id]);
-       
-   }
-  
-  
+        $this->attributes['slug'] = $slug;
+    }
+    public function markBestReply(Reply $reply)
+    {
+        $this->update(['best_reply_id' => $reply->id]);
+    }
 }
