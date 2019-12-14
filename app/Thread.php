@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\ThreadReceivedNewReply;
 use Illuminate\Support\Str;
-use PhpParser\Node\Expr\FuncCall;
+
 use Laravel\Scout\Searchable;
 
 class Thread extends Model
@@ -120,5 +120,9 @@ class Thread extends Model
     public function markBestReply(Reply $reply)
     {
         $this->update(['best_reply_id' => $reply->id]);
+    }
+    public function toSearchableArray()
+    {
+        return $this->toArray() + ['path' => $this->path()];
     }
 }

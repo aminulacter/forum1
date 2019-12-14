@@ -8,6 +8,22 @@
             {{ $threads->links()}}
         </div>
         <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Search
+                    <img src="{{ asset('algolia/logo-algolia-nebula-blue-full.png') }}" alt="" height="30" width="60">
+                </div>
+                <div class="card-body">
+                    <form method="get" action="/threads/search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search for something..." name="q"> 
+                        </div>
+                        <div class="form-group">
+                               <button class="btn btn-light shadow"  type="submit">Search</button>
+                        </div>
+                    </form>                                   
+                </div>
+            </div>
             @if (count($trending))
             <div class="card">
                     <div class="card-header">
@@ -26,7 +42,7 @@
                         </ul>
                        
                     </div>
-                </div>
+            </div>
             @endif
            
         </div>

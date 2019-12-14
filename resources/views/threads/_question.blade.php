@@ -11,7 +11,7 @@
     <div class="card-body">  
         <div class="form-group">
           
-            <textarea class="form-control" name="" rows="10" v-model = "form.body"></textarea>
+                <wysiwyg  v-model="form.body" :value="form.body" name="body"></wysiwyg>
         </div>
       
     </div>
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div class="card-body" v-text="form.body">  
+    <div class="card-body" v-html="form.body">  
     
     </div>
        @can('update', $thread)

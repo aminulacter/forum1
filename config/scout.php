@@ -85,6 +85,7 @@ return [
 
     'algolia' => [
         'id' => env('ALGOLIA_APP_ID', 'KV0GIHZYKT'),
+        'key' => env('ALGOLIA_APP_KEY', '025067582a7f293c59f100a29754b937'),
         'secret' => env('ALGOLIA_SECRET', '4851b2fdca3611ae5c881500e9c844dc'),
     ],
 

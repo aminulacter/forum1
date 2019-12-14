@@ -1,16 +1,19 @@
 <template>
     <div>
           
-            <div class="mt-3" v-if="signedIn">
+            <div class="mt-3" v-if="signedIn" >
                    
                         <div class="form-group">
-                            
-                            <textarea id="body" 
+                           <wysiwyg name="body" v-model="body" 
+                           placeholder="Have some thing to say"
+                           :shouldClear="complete"
+                           ></wysiwyg> 
+                            <!-- <textarea id="body" 
                             class="form-control" 
                             name="body" rows="5"  
                             placeholder="have something to say?"
                             required
-                             v-model="body"></textarea>
+                             v-model="body"></textarea> -->
                         </div>    
                         
                         <button type="submit" 
@@ -36,6 +39,7 @@
         data() {
             return {
                 body: '',
+                complete: false
                
             }
         },
@@ -60,6 +64,7 @@
                 axios.post(location.pathname + '/replies', { body: this.body})
                 .then(({data}) =>{
                     this.body = ''
+                    this.complete = true
                     flash('Your reply has been posted')
                     this.$emit('created', data)
                 })
