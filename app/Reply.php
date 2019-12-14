@@ -59,9 +59,16 @@ class Reply extends Model
         return $this->thread->best_reply_id == $this->id;
     }
 
-    public function getIsBestAttribute(){
+    public function getIsBestAttribute()
+    {
         return  $this->isBest();
     }
+
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
+    }
+
     // public function favorites()
     // {
     //     return $this->morphMany('App\Favorite', 'favorited');
